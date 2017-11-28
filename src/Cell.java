@@ -3,7 +3,7 @@ import java.util.ArrayList;
 class Cell {
 
     private final int i, j;
-    public final ArrayList<Cell> adj = new ArrayList<>();
+    private final ArrayList<Cell> adj = new ArrayList<>();
     private Coin coin;
 
     public Cell(int i, int j) {

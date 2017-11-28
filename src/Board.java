@@ -51,30 +51,30 @@ class Board {
 
                 //Up
                 if(i>0) {
-                    cell.adj.add(getCell(i-1, j));
-                    cell.adj.add(getCell(i-1, j+1));
+                    cell.getAdj().add(getCell(i-1, j));
+                    cell.getAdj().add(getCell(i-1, j+1));
                 }
 
                 //Left
                 if(j>0) {
-                    cell.adj.add(getCell(i, j-1));
+                    cell.getAdj().add(getCell(i, j-1));
                 }
 
                 //Right
                 if(j< Main.ROWS-i-1){
-                    cell.adj.add(getCell(i, j+1));
+                    cell.getAdj().add(getCell(i, j+1));
                 }
 
                 //Down
                 if(i< Main.ROWS-1){
                     //Left down
                     if(j>0) {
-                        cell.adj.add(getCell(i+1, j-1));
+                        cell.getAdj().add(getCell(i+1, j-1));
                     }
 
                     //Right down
                     if(j< Main.ROWS-i-1) {
-                        cell.adj.add(getCell(i+1, j));
+                        cell.getAdj().add(getCell(i+1, j));
                     }
                 }
             }

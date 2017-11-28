@@ -4,7 +4,7 @@ enum Strategy {
     RANDOM, HIGHESTOPEN
 }
 
-public class GameHandler {
+class GameHandler {
 
     private final Strategy strategy;
 
