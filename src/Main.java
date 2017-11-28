@@ -1,90 +1,71 @@
-import java.util.Scanner;
+import java.util.ArrayList;
 
 class Main {
 
-    public final static boolean debug = true;
+    public final static boolean DEBUG = false; // Contest: true (doesn't matter a lot)
+    public final static boolean PRINTDEBUGTOSTERR = false; // Contest: true
+    public final static boolean SINGLEMODE = false; // Contest: true
+    public static final String[] BROWNCELLS = {"H1", "F2", "A3", "C4", "D5"}; //Only needed for non single mode
+
+    public static final int DEFAULTSCORE = 75;
+    public static final int TOTALCELLS = 36;
+    public static final int BROWNCOINS = 5;
+    public static final int ROWS = 8;
+    public static final int COINS = 15;
 
     public final static int TURNS = 15;
 
-    public static Color ourColor;
-    public static Color oppColor;
-
-    public static Scanner scanner = new Scanner(System.in);
-
-    public static Board board;
-
     public static void main(String[] args) {
-
-        board = new Board();
-        board.buildBoard();
-        mainLoop();
-    }
-
-    private static void mainLoop() {
-        //First line of input
-        String nextLine = scanner.nextLine();
-        if(nextLine.equals("Start")) {
-            //We are red
-            ourColor = Color.RED;
-            oppColor = Color.BLUE;
+        if(SINGLEMODE) {
+            new GameHandler(Strategy.HIGHESTOPEN).run();
         } else {
-            ourColor = Color.BLUE;
-            oppColor = Color.RED;
-            computeInput(nextLine, oppColor);
-        }
-
-        for(int i=0; i<TURNS; i++) {
-            System.out.println(computeOutput(i));
-            computeInput(scanner.nextLine(), oppColor);
-        }
-        debug("[ERROR] We are after the mainloop, we are not supposed to be here!");
-    }
-
-    private static void computeInput(String input, Color player) {
-        if(input.equals("Quit")) {
-            endGame();
-            return;
-        }
-
-        Cell cell = board.getCell(input.substring(0, 2));
-        int value = Integer.parseInt(input.substring(3, input.length()));
-
-        if(cell.getCoin() == null) {
-            debug("Wanted to set a coin that was already set");
-            endGame();
-        } else if(value == 0 || value > 15) {
-            debug("Invalid value");
-            endGame();
-        } else {
-
-            //Set the coin
-            cell.setCoin(board.getCoins(player)[value]);
-            board.getCoins(player)[value].setSpot(cell);
-
+            experiment();
         }
     }
 
-    private static String computeOutput(int turn) {
+    private static void experiment() {
+        int TESTCASES = 10000;
+        int blueScore = 0;
+        int redScore = 0;
+        long blueTime = 0;
+        long redTime = 0;
+        for(int i=0; i<TESTCASES; i++) {
+            Judge judge = new Judge(Strategy.RANDOM, Strategy.HIGHESTOPEN, BROWNCELLS);
+            judge.run();
+            redScore += judge.getScore(Color.RED);
+            blueScore += judge.getScore(Color.BLUE);
+            redTime += judge.getTime(Color.RED);
+            blueTime += judge.getTime(Color.BLUE);
+            /*
+            System.out.println("Red Points: " + judge.getScore(Color.RED));
+            System.out.println("Blue Points: " + judge.getScore(Color.BLUE));
+            System.out.println("Red Time: " + judge.getTime(Color.RED));
+            System.out.println("Blue Time: " + judge.getTime(Color.BLUE));
+            */
 
-
-        String output = "A4=5";
-        //TODO Get output
-
-        //Actually set the info (and check if it is correct)
-        computeInput(output, ourColor);
-
-        return "TODO";
+        }
+        blueScore /= TESTCASES;
+        redScore /= TESTCASES;
+        blueTime /= TESTCASES;
+        redTime /= TESTCASES;
+        System.out.println("Scores: ["+redScore+"|"+blueScore+"]");
+        System.out.println("Times: ["+redTime+"|"+blueTime+"]");
     }
 
-    private static void endGame() {
+    public static void endGame() {
         debug("Game exiting");
-        System.exit(0);
+        System.exit(2);
         return;
     }
 
     public static void debug(String message) {
-        if(debug) {
-            System.out.println("[D] "+message);
+        if(DEBUG) {
+            if(PRINTDEBUGTOSTERR) {
+                System.err.println(message);
+            } else {
+                System.out.println("[D] " + message);
+            }
         }
     }
+
 }

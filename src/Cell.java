@@ -2,8 +2,6 @@ import java.util.ArrayList;
 
 class Cell {
 
-    public final int DEFAULTSCORE = 75;
-
     private final int i, j;
     public final ArrayList<Cell> adj = new ArrayList<>();
     private Coin coin;
@@ -46,7 +44,7 @@ class Cell {
     }
 
     public int getScore(Color color) {
-        int score = DEFAULTSCORE;
+        int score = Main.DEFAULTSCORE;
         for(Cell cell: adj){
             if(cell.getCoin().getColor() == color) {
                 score += cell.getCoin().getValue();
