@@ -1,10 +1,8 @@
-import java.util.ArrayList;
-
 class Main {
 
-    public final static boolean DEBUG = false; // Contest: true (doesn't matter a lot)
-    public final static boolean PRINTDEBUGTOSTERR = false; // Contest: true
-    public final static boolean SINGLEMODE = false; // Contest: true
+    public final static boolean DEBUG = true; // Contest: true (doesn't matter a lot)
+    public final static boolean PRINTDEBUGTOSTERR = true; // Contest: true
+    public final static boolean SINGLEMODE = true; // Contest: true
     public static final String[] BROWNCELLS = {"H1", "F2", "A3", "C4", "D5"}; //Only needed for non single mode
 
     public static final int DEFAULTSCORE = 75;
@@ -55,7 +53,6 @@ class Main {
     public static void endGame() {
         debug("Game exiting");
         System.exit(2);
-        return;
     }
 
     public static void debug(String message) {

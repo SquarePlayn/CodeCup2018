@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 class Judge {
@@ -113,7 +112,6 @@ class Judge {
     public static void outputLine(Color player, String output) {
         if(Main.SINGLEMODE) {
             System.out.println(output);
-            return;
         } else {
             ArrayList<String> oppInput;
             if(player == Color.RED) {
@@ -187,7 +185,6 @@ class Judge {
             Main.endGame();
         }
 
-        GameHandler game;
         if(color == Color.RED) {
             return redTime;
         } else if(color == Color.BLUE) {
