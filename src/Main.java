@@ -1,8 +1,11 @@
+import java.util.ArrayList;
+import java.util.Random;
+
 class Main {
 
-    public final static boolean DEBUG = true; // Contest: true (doesn't matter a lot)
-    public final static boolean PRINTDEBUGTOSTERR = true; // Contest: true
-    public final static boolean SINGLEMODE = true; // Contest: true
+    public final static boolean DEBUG = false; // Contest: true (doesn't matter a lot)
+    public final static boolean PRINTDEBUGTOSTERR = false; // Contest: true
+    public final static boolean SINGLEMODE = false; // Contest: true
     public static final String[] BROWNCELLS = {"H1", "F2", "A3", "C4", "D5"}; //Only needed for non single mode
 
     public static final int DEFAULTSCORE = 75;
@@ -15,10 +18,34 @@ class Main {
 
     public static void main(String[] args) {
         if(SINGLEMODE) {
-            new GameHandler(Strategy.HIGHESTOPEN).run();
+            new GameHandler(Strategy.COMBINE_MAIN).run();
         } else {
             experiment();
         }
+    }
+
+    private static String[] getRandomBrownCells() {
+        ArrayList<String> brownCells = new ArrayList<>();
+        String[] returns = new String[BROWNCOINS];
+        Random rand = new Random();
+        for(int i=0; i<BROWNCOINS; i++) {
+            String brownCell;
+            do {
+                char letter = 'A';
+                int rLet = rand.nextInt(TOTALCELLS);
+                int rowCellsLeft = ROWS;
+                while (rLet >= rowCellsLeft) {
+                    rLet -= rowCellsLeft;
+                    rowCellsLeft--;
+                    letter++;
+                }
+                brownCell = letter+""+(rLet+1);
+            }while(brownCells.contains(brownCell));
+            brownCells.add(brownCell);
+            returns[i] = brownCell;
+        }
+
+        return returns;
     }
 
     private static void experiment() {
@@ -28,7 +55,7 @@ class Main {
         long blueTime = 0;
         long redTime = 0;
         for(int i=0; i<TESTCASES; i++) {
-            Judge judge = new Judge(Strategy.RANDOM, Strategy.HIGHESTOPEN, BROWNCELLS);
+            Judge judge = new Judge(Strategy.COMBINE_MAIN, Strategy.LEASTLOSS, getRandomBrownCells());
             judge.run();
             redScore += judge.getScore(Color.RED);
             blueScore += judge.getScore(Color.BLUE);

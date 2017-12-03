@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 enum Strategy {
-    RANDOM, HIGHESTOPEN
+    RANDOM, HIGHESTOPEN, LEASTLOSS, COMBINE_MAIN, COMBINE_TEST
 }
 
 class GameHandler {
@@ -124,6 +124,10 @@ class GameHandler {
         }
     }
 
+    public Board getBoard() {
+        return board;
+    }
+
     private String computeOutput() {
         String output = "";
         switch (strategy) {
@@ -133,6 +137,14 @@ class GameHandler {
             case HIGHESTOPEN:
                 output = computeOutputHighFree();
                 break;
+            case LEASTLOSS:
+                output = computeOutputLeastLoss();
+                break;
+            case COMBINE_MAIN:
+                output = computeOutputCombinedMain();
+                break;
+            case COMBINE_TEST:
+                output = computeOutputCombinedTest();
             default:
                 Main.debug("[ERROR] Strategy Switch failed");
                 Main.endGame();
@@ -175,13 +187,37 @@ class GameHandler {
             }
         }
 
-        ArrayList<Coin> remainingCoins = board.getRemainingCoins(ourColor);
-        Coin coin = remainingCoins.get(remainingCoins.size()-1);
+        Coin coin = board.getHighestRemainingCoin(ourColor);
 
         return mostOpenCell.getName()+"="+coin.getValue();
     }
 
-    public Board getBoard() {
-        return board;
+    private String computeOutputLeastLoss() {
+        //Put a high number in the spot that leads to the least decrease of score
+        Cell leastDecreseCell = board.getEmptyCells().get(0);
+        int leastDecrease = Integer.MAX_VALUE;
+        for(Cell cell: board.getEmptyCells()) {
+            int score = cell.getScore(ourColor);
+            if(score < leastDecrease) {
+                leastDecrease = score;
+                leastDecreseCell = cell;
+            }
+        }
+
+        Coin coin = board.getHighestRemainingCoin(ourColor);
+
+        return leastDecreseCell.getName()+"="+coin.getValue();
+    }
+
+    private String computeOutputCombinedMain() {
+        if(turn < 7) {
+            return computeOutputHighFree();
+        } else {
+            return computeOutputLeastLoss();
+        }
+    }
+
+    private String computeOutputCombinedTest() {
+        return computeOutputRandom();
     }
 }

@@ -46,10 +46,12 @@ class Cell {
     public int getScore(Color color) {
         int score = Main.DEFAULTSCORE;
         for(Cell cell: adj){
-            if(cell.getCoin().getColor() == color) {
-                score += cell.getCoin().getValue();
-            } else if(cell.getCoin().getColor() == Color.BLUE || cell.getCoin().getColor() == Color.RED){
-                score -= cell.getCoin().getValue();
+            if(cell.getCoin() != null) {
+                if (cell.getCoin().getColor() == color) {
+                    score += cell.getCoin().getValue();
+                } else if (cell.getCoin().getColor() == Color.BLUE || cell.getCoin().getColor() == Color.RED) {
+                    score -= cell.getCoin().getValue();
+                }
             }
         }
         return score;

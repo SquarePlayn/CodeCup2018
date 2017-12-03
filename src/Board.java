@@ -101,6 +101,11 @@ class Board {
         }
     }
 
+    public Coin getHighestRemainingCoin(Color color) {
+        ArrayList<Coin> remainingCoins = getRemainingCoins(color);
+        return remainingCoins.get(remainingCoins.size()-1);
+    }
+
     public ArrayList<Cell> getAllCells() {
         return allCells;
     }
