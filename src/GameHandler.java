@@ -1,7 +1,8 @@
+import javafx.util.Pair;
 import java.util.ArrayList;
 
 enum Strategy {
-    RANDOM, HIGHESTOPEN, LEASTLOSS, COMBINE_MAIN, COMBINE_TEST
+    RANDOM, HIGHESTOPEN, LEASTLOSS, COMBINE_MAIN, COMBINE_TEST, MINMAX
 }
 
 class GameHandler {
@@ -28,19 +29,19 @@ class GameHandler {
         readFirstLine();
 
         //Make all turns
-        for(int i = 0; i< Main.TURNS; i++) {
+        for(int i = 0; i< SuperNova.TURNS; i++) {
             outputLine();
             inputLine();
         }
 
-        Main.debug("[ERROR] We are after the mainloop, we are not supposed to be here!");
-        Main.endGame();
+        SuperNova.debug("[ERROR] We are after the mainloop, we are not supposed to be here!");
+        SuperNova.endGame();
     }
 
     public void preamble() {
-        Main.debug("Reading preamble");
+        SuperNova.debug("Reading preamble");
         //Read preamble brown cells
-        for(int i = 0; i< Main.BROWNCOINS; i++) {
+        for(int i = 0; i< SuperNova.BROWNCOINS; i++) {
             String spot = Judge.readLine(this);
             board.setBrownSpot(spot, i);
         }
@@ -49,10 +50,10 @@ class GameHandler {
     }
 
     private void readFirstLine() {
-        Main.debug("Reading first line");
+        SuperNova.debug("Reading first line");
         if(!canInput){
-            Main.debug("[ERROR] Call to read first line while not ready to read");
-            Main.endGame();
+            SuperNova.debug("[ERROR] Call to read first line while not ready to read");
+            SuperNova.endGame();
         }
 
         // Handle first line of input ("Start" or Assignment)
@@ -73,8 +74,8 @@ class GameHandler {
 
     public void inputLine() {
         if(!canInput){
-            Main.debug("[ERROR] Call to read line while not ready to read");
-            Main.endGame();
+            SuperNova.debug("[ERROR] Call to read line while not ready to read");
+            SuperNova.endGame();
         }
 
         if(turn == 0) {
@@ -89,8 +90,8 @@ class GameHandler {
 
     public void outputLine() {
         if(!canOutput){
-            Main.debug("[ERROR] Call to output line while not ready to read");
-            Main.endGame();
+            SuperNova.debug("[ERROR] Call to output line while not ready to read");
+            SuperNova.endGame();
         }
 
         Judge.outputLine(ourColor, computeOutput());
@@ -102,7 +103,7 @@ class GameHandler {
 
     private void computeInput(String input, Color player) {
         if(input.equals("Quit")) {
-            Main.endGame();
+            SuperNova.endGame();
             return;
         }
 
@@ -110,11 +111,11 @@ class GameHandler {
         int value = Integer.parseInt(input.substring(3, input.length()));
 
         if(cell.getCoin() != null) {
-            Main.debug("[ERROR] Wanted to set a coin that was already set");
-            Main.endGame();
+            SuperNova.debug("[ERROR] Wanted to set a coin that was already set");
+            SuperNova.endGame();
         } else if(value == 0 || value > 15) {
-            Main.debug("[ERROR] Invalid coin value parsed");
-            Main.endGame();
+            SuperNova.debug("[ERROR] Invalid coin value parsed");
+            SuperNova.endGame();
         } else {
 
             //Set the coin
@@ -140,14 +141,18 @@ class GameHandler {
             case LEASTLOSS:
                 output = computeOutputLeastLoss();
                 break;
+            case MINMAX:
+                output = computeOutputMinMax();
+                break;
             case COMBINE_MAIN:
                 output = computeOutputCombinedMain();
                 break;
             case COMBINE_TEST:
                 output = computeOutputCombinedTest();
+                break;
             default:
-                Main.debug("[ERROR] Strategy Switch failed");
-                Main.endGame();
+                SuperNova.debug("[ERROR] Strategy Switch failed");
+                SuperNova.endGame();
                 break;
         }
 
@@ -209,6 +214,49 @@ class GameHandler {
         return leastDecreseCell.getName()+"="+coin.getValue();
     }
 
+    private String computeOutputMinMax() {
+        return minMax(ourColor).getValue();
+    }
+
+    private Pair<Integer, String> minMax(Color turn) {
+
+        //Detect end of game
+        if(board.getRemainingCoins(turn).isEmpty()) {
+            return new Pair<>(board.getEmptyCells().get(0).getScore(ourColor), "");
+        }
+
+        boolean ourTurn = turn == ourColor;
+
+        int bestScore = ourTurn ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+        String bestDecision = "";
+
+        for(int c=0; c < board.getEmptyCells().size(); c++) {
+            Cell cell = board.getEmptyCells().get(c);
+            for(int i=0; i<board.getRemainingCoins(turn).size(); i++) {
+                Coin coin = board.getRemainingCoins(turn).get(i);
+                cell.setCoin(coin);
+                coin.setSpot(cell);
+                int score = minMax(ourTurn ? oppColor : ourColor).getKey();
+                if(ourTurn) {
+                    if(score > bestScore) {
+                        bestScore = score;
+                        bestDecision = cell.getName() + "=" + coin.getValue();
+                    }
+                } else {
+                    if(score < bestScore) {
+                        bestScore = score;
+                        bestDecision = cell.getName() + "=" + coin.getValue();
+                    }
+                }
+                cell.setCoin(null);
+                coin.setSpot(null);
+            }
+        }
+
+        return new Pair<>(bestScore, bestDecision);
+
+    }
+
     private String computeOutputCombinedMain() {
         if(turn < 7) {
             return computeOutputHighFree();
@@ -218,6 +266,12 @@ class GameHandler {
     }
 
     private String computeOutputCombinedTest() {
-        return computeOutputRandom();
+        if(turn < 7) {
+            return  computeOutputHighFree();
+        } else if(turn < 12) {
+            return computeOutputLeastLoss();
+        } else {
+            return computeOutputMinMax();
+        }
     }
 }

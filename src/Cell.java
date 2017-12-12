@@ -44,7 +44,7 @@ class Cell {
     }
 
     public int getScore(Color color) {
-        int score = Main.DEFAULTSCORE;
+        int score = SuperNova.DEFAULTSCORE;
         for(Cell cell: adj){
             if(cell.getCoin() != null) {
                 if (cell.getCoin().getColor() == color) {

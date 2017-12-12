@@ -44,7 +44,7 @@ class Judge {
         gameBlue.preamble();
         stopTime(Color.BLUE);
 
-        for(int turn=0; turn<Main.TURNS; turn++) {
+        for(int turn = 0; turn< SuperNova.TURNS; turn++) {
             startTime(Color.RED);
             gameRed.inputLine();
             gameRed.outputLine();
@@ -58,13 +58,13 @@ class Judge {
 
         //Clean up last entry for completeness and checks
         if(redInput.isEmpty()) {
-            Main.debug("[ERROR] Judge failed: no 1 input left in redInput after last turn");
-            Main.endGame();
+            SuperNova.debug("[ERROR] Judge failed: no 1 input left in redInput after last turn");
+            SuperNova.endGame();
         }
         redInput.remove(0);
         if(!redInput.isEmpty() || !blueInput.isEmpty()) {
-            Main.debug("[ERROR] Judge failed: One input is not empty after all turns");
-            Main.endGame();
+            SuperNova.debug("[ERROR] Judge failed: One input is not empty after all turns");
+            SuperNova.endGame();
         }
 
         //Append "Quit"s for completeness
@@ -75,21 +75,21 @@ class Judge {
     }
 
     public static String readLine(GameHandler game) {
-        if(Main.SINGLEMODE) {
+        if(SuperNova.SINGLEMODE) {
             return readLine(Color.BROWN);
         } else if(game.equals(gameRed)) {
             return readLine(Color.RED);
         } else if(game.equals(gameBlue)) {
             return readLine(Color.BLUE);
         } else {
-            Main.debug("[ERROR] We should not end up here, readline of gamehandler failed");
+            SuperNova.debug("[ERROR] We should not end up here, readline of gamehandler failed");
             return readLine(Color.BROWN);
         }
 
     }
 
     public static String readLine(Color player) {
-        if(Main.SINGLEMODE) {
+        if(SuperNova.SINGLEMODE) {
             return scanner.nextLine();
         } else {
             ArrayList<String> input;
@@ -100,8 +100,8 @@ class Judge {
             }
 
             if(input.isEmpty()){
-                Main.debug("[ERROR] Judge failed: readLine requested while player had no line to read");
-                Main.endGame();
+                SuperNova.debug("[ERROR] Judge failed: readLine requested while player had no line to read");
+                SuperNova.endGame();
             }
 
             //Remove the newest line from the input it had left
@@ -110,7 +110,7 @@ class Judge {
     }
 
     public static void outputLine(Color player, String output) {
-        if(Main.SINGLEMODE) {
+        if(SuperNova.SINGLEMODE) {
             System.out.println(output);
         } else {
             ArrayList<String> oppInput;
@@ -119,14 +119,14 @@ class Judge {
             } else if(player == Color.BLUE) {
                 oppInput = redInput;
             } else {
-                Main.debug("[ERROR]OutputLine got invalid player color");
-                Main.endGame();
+                SuperNova.debug("[ERROR]OutputLine got invalid player color");
+                SuperNova.endGame();
                 return;
             }
 
             if(!oppInput.isEmpty()) {
-                Main.debug("[ERROR] Judge failed: outputLine requested while player is not ready to write, other player is behind.");
-                Main.endGame();
+                SuperNova.debug("[ERROR] Judge failed: outputLine requested while player is not ready to write, other player is behind.");
+                SuperNova.endGame();
             }
 
             oppInput.add(output);
@@ -139,8 +139,8 @@ class Judge {
         } else if(color == Color.BLUE) {
             blueTrackTime = getTime();
         } else {
-            Main.debug("[ERROR] Wrong color passed to startTime in Judge");
-            Main.endGame();
+            SuperNova.debug("[ERROR] Wrong color passed to startTime in Judge");
+            SuperNova.endGame();
         }
     }
 
@@ -150,8 +150,8 @@ class Judge {
         } else if(color == Color.BLUE) {
             blueTime += getTime() - blueTrackTime;
         } else {
-            Main.debug("[ERROR] Wrong color passed to stopTime in Judge");
-            Main.endGame();
+            SuperNova.debug("[ERROR] Wrong color passed to stopTime in Judge");
+            SuperNova.endGame();
         }
     }
 
@@ -161,8 +161,8 @@ class Judge {
 
     public int getScore(Color color) {
         if(!finished) {
-            Main.debug("[ERROR] Call to see score made before game was finished");
-            Main.endGame();
+            SuperNova.debug("[ERROR] Call to see score made before game was finished");
+            SuperNova.endGame();
         }
 
         GameHandler game;
@@ -171,8 +171,8 @@ class Judge {
         } else if(color == Color.BLUE) {
             game = gameBlue;
         } else {
-            Main.debug("[ERROR] Asked for score of invalid color");
-            Main.endGame();
+            SuperNova.debug("[ERROR] Asked for score of invalid color");
+            SuperNova.endGame();
             return 0;
         }
 
@@ -181,8 +181,8 @@ class Judge {
 
     public int getTime(Color color) {
         if(!finished) {
-            Main.debug("[ERROR] Call to see time made before game was finished");
-            Main.endGame();
+            SuperNova.debug("[ERROR] Call to see time made before game was finished");
+            SuperNova.endGame();
         }
 
         if(color == Color.RED) {
@@ -190,8 +190,8 @@ class Judge {
         } else if(color == Color.BLUE) {
             return blueTime;
         } else {
-            Main.debug("[ERROR] Asked for time of invalid color");
-            Main.endGame();
+            SuperNova.debug("[ERROR] Asked for time of invalid color");
+            SuperNova.endGame();
             return 0;
         }
     }

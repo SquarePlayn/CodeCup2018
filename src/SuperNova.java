@@ -1,12 +1,18 @@
 import java.util.ArrayList;
 import java.util.Random;
 
-class Main {
+class SuperNova {
 
     public final static boolean DEBUG = false; // Contest: true (doesn't matter a lot)
     public final static boolean PRINTDEBUGTOSTERR = false; // Contest: true
     public final static boolean SINGLEMODE = false; // Contest: true
     public static final String[] BROWNCELLS = {"H1", "F2", "A3", "C4", "D5"}; //Only needed for non single mode
+    private static final boolean RANDOM_BROWNCELLS = true; // Only for non single mode
+
+    private static final Strategy STRAT_ONE = Strategy.LEASTLOSS;    // Compare mode Red Strat
+    private static final Strategy STRAT_TWO = Strategy.COMBINE_TEST;       // Compare mode Blue Strat
+    private static final Strategy STRAT_SINGLE = Strategy.COMBINE_TEST; // Single mode Strat
+    private static final int TESTCASES = 5; // Amount of testcases in experimental mode
 
     public static final int DEFAULTSCORE = 75;
     public static final int TOTALCELLS = 36;
@@ -18,7 +24,7 @@ class Main {
 
     public static void main(String[] args) {
         if(SINGLEMODE) {
-            new GameHandler(Strategy.COMBINE_MAIN).run();
+            new GameHandler(STRAT_SINGLE).run();
         } else {
             experiment();
         }
@@ -49,25 +55,18 @@ class Main {
     }
 
     private static void experiment() {
-        int TESTCASES = 10000;
         int blueScore = 0;
         int redScore = 0;
         long blueTime = 0;
         long redTime = 0;
         for(int i=0; i<TESTCASES; i++) {
-            Judge judge = new Judge(Strategy.COMBINE_MAIN, Strategy.LEASTLOSS, getRandomBrownCells());
+            String[] brownCells = RANDOM_BROWNCELLS ? getRandomBrownCells() : BROWNCELLS;
+            Judge judge = new Judge(STRAT_ONE, STRAT_TWO, brownCells);
             judge.run();
             redScore += judge.getScore(Color.RED);
             blueScore += judge.getScore(Color.BLUE);
             redTime += judge.getTime(Color.RED);
             blueTime += judge.getTime(Color.BLUE);
-            /*
-            System.out.println("Red Points: " + judge.getScore(Color.RED));
-            System.out.println("Blue Points: " + judge.getScore(Color.BLUE));
-            System.out.println("Red Time: " + judge.getTime(Color.RED));
-            System.out.println("Blue Time: " + judge.getTime(Color.BLUE));
-            */
-
         }
         blueScore /= TESTCASES;
         redScore /= TESTCASES;

@@ -4,22 +4,22 @@ class Board {
 
     private ArrayList<Cell> allCells = new ArrayList<>();
     private ArrayList<ArrayList<Cell>> cells = new ArrayList<>();
-    private Coin[] redCoins = new Coin[Main.COINS];
-    private Coin[] blueCoins = new Coin[Main.COINS];
-    private Coin[] brownCoins = new Coin[Main.BROWNCOINS];
+    private Coin[] redCoins = new Coin[SuperNova.COINS];
+    private Coin[] blueCoins = new Coin[SuperNova.COINS];
+    private Coin[] brownCoins = new Coin[SuperNova.BROWNCOINS];
 
     public void buildBoard() {
         if(cells.isEmpty()) {
-            Main.debug("Building board");
+            SuperNova.debug("Building board");
             buildCells();
             buildConnections();
             buildCoins();
-            Main.debug("Building board complete");
+            SuperNova.debug("Building board complete");
         }
     }
 
     private void buildCoins() {
-        for(int i = 1; i<= Main.COINS; i++) {
+        for(int i = 1; i<= SuperNova.COINS; i++) {
             redCoins[i-1] = new Coin(Color.RED, i);
             blueCoins[i-1] = new Coin(Color.BLUE, i);
         }
@@ -33,9 +33,9 @@ class Board {
 
     private void buildCells() {
 
-        for(int i = 0; i< Main.ROWS; i++) {
+        for(int i = 0; i< SuperNova.ROWS; i++) {
             ArrayList<Cell> newRow = new ArrayList<>();
-            for(int j = 0; j< Main.ROWS-i; j++) {
+            for(int j = 0; j< SuperNova.ROWS-i; j++) {
                 Cell newCell = new Cell(i, j);
                 newRow.add(newCell);
                 allCells.add(newCell);
@@ -45,8 +45,8 @@ class Board {
     }
 
     private void buildConnections() {
-        for(int i = 0; i< Main.ROWS; i++) {
-            for(int j = 0; j< Main.ROWS-i; j++) {
+        for(int i = 0; i< SuperNova.ROWS; i++) {
+            for(int j = 0; j< SuperNova.ROWS-i; j++) {
                 Cell cell = getCell(i, j);
 
                 //Up
@@ -61,19 +61,19 @@ class Board {
                 }
 
                 //Right
-                if(j< Main.ROWS-i-1){
+                if(j< SuperNova.ROWS-i-1){
                     cell.getAdj().add(getCell(i, j+1));
                 }
 
                 //Down
-                if(i< Main.ROWS-1){
+                if(i< SuperNova.ROWS-1){
                     //Left down
                     if(j>0) {
                         cell.getAdj().add(getCell(i+1, j-1));
                     }
 
                     //Right down
-                    if(j< Main.ROWS-i-1) {
+                    if(j< SuperNova.ROWS-i-1) {
                         cell.getAdj().add(getCell(i+1, j));
                     }
                 }
