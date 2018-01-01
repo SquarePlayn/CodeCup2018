@@ -1,7 +1,26 @@
 import java.util.ArrayList;
-import javafx.util.Pair;
 import java.util.Scanner;
 import java.util.Random;
+
+// CodeCup has no javafx.util.Pair so made my own
+class Pair<O1, O2> {
+
+    O1 key;
+    O2 value;
+
+    Pair(O1 key, O2 value) {
+        this.key = key;
+        this.value = value;
+    }
+
+    public O1 getKey() {
+        return key;
+    }
+
+    public O2 getValue() {
+        return value;
+    }
+}
 
 class Board {
 
