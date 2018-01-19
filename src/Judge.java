@@ -18,9 +18,9 @@ class Judge {
 
     private boolean finished = false;
 
-    public Judge(Strategy stratRed, Strategy stratBlue, String[] brownCells) {
-        gameRed = new GameHandler(stratRed);
-        gameBlue = new GameHandler(stratBlue);
+    public Judge(Strategy stratRed, Strategy stratBlue, String[] brownCells, NeuralNetwork neuralNetwork) {
+        gameRed = new GameHandler(stratRed, neuralNetwork);
+        gameBlue = new GameHandler(stratBlue, neuralNetwork);
 
         redInput = new ArrayList<>();
         blueInput = new ArrayList<>();

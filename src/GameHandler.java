@@ -1,8 +1,11 @@
 import javafx.util.Pair;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Random;
 
 enum Strategy {
-    RANDOM, HIGHESTOPEN, LEASTLOSS, COMBINE_MAIN, COMBINE_TEST, MINMAX
+    RANDOM, HIGHESTOPEN, LEASTLOSS, COMBINE_MAIN, COMBINE_TEST, NEURAL_NET, MINMAX
 }
 
 class GameHandler {
@@ -19,9 +22,18 @@ class GameHandler {
     private boolean canOutput = false;
     private boolean canInput = false;
 
-    public GameHandler(Strategy strategy) {
+    private NeuralNetwork neuralNetwork;
+
+    public GameHandler(Strategy strategy, NeuralNetwork neuralNetwork) {
         this.strategy = strategy;
         board.buildBoard();
+
+        if(neuralNetwork != null) {
+            this.neuralNetwork = neuralNetwork;
+        } else if(strategy == Strategy.NEURAL_NET) {
+            this.neuralNetwork = new NeuralNetwork(new int[]{72, 50, 36});
+            neuralNetwork.initializeWeights();
+        }
     }
 
     public void run() {
@@ -35,6 +47,7 @@ class GameHandler {
         }
 
         SuperNova.debug("[ERROR] We are after the mainloop, we are not supposed to be here!");
+
         SuperNova.endGame();
     }
 
@@ -150,6 +163,9 @@ class GameHandler {
             case COMBINE_TEST:
                 output = computeOutputCombinedTest();
                 break;
+            case NEURAL_NET:
+                output = computeOutputNeuralNet();
+                break;
             default:
                 SuperNova.debug("[ERROR] Strategy Switch failed");
                 SuperNova.endGame();
@@ -258,20 +274,30 @@ class GameHandler {
     }
 
     private String computeOutputCombinedMain() {
-        if(turn < 7) {
-            return computeOutputHighFree();
-        } else {
+        if(turn < 12) {
+            return  computeOutputNeuralNet();
+        } else if(turn < 14) {
             return computeOutputLeastLoss();
+        } else {
+            return computeOutputMinMax();
         }
     }
 
     private String computeOutputCombinedTest() {
         if(turn < 7) {
             return  computeOutputHighFree();
-        } else if(turn < 12) {
+        } else if(turn < 14) {
             return computeOutputLeastLoss();
         } else {
             return computeOutputMinMax();
         }
+    }
+
+    private String computeOutputNeuralNet() {
+        neuralNetwork.setInputs(board.getAllCells(), oppColor);
+        neuralNetwork.caluculateOutput();
+        int node = neuralNetwork.getOutput(board.getAllCells());
+        ArrayList<Coin> coins = board.getRemainingCoins(ourColor);
+        return board.getAllCells().get(node).getName() + "=" + board.getHighestRemainingCoin(ourColor).getValue();
     }
 }
