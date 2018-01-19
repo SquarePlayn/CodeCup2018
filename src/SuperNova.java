@@ -1,10 +1,11 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Random;
 
 class SuperNova {
 
-    public final static boolean DEBUG = false; // Contest: true (doesn't matter a lot)
+    public final static boolean DEBUG = true; // Contest: true (doesn't matter a lot)
     public final static boolean PRINTDEBUGTOSTERR = true; // Contest: true
     public final static boolean SINGLEMODE = false; // Contest: true
     public static final String[] BROWNCELLS = {"H1", "F2", "A3", "C4", "D5"}; //Only needed for non single mode
@@ -12,10 +13,10 @@ class SuperNova {
 
     private static final Strategy STRAT_ONE = Strategy.COMBINE_MAIN;    // Compare mode Red Strat
     private static final Strategy STRAT_TWO = Strategy.COMBINE_TEST;       // Compare mode Blue Strat
-    private static final Strategy STRAT_SINGLE = Strategy.COMBINE_TEST; // Single mode Strat
+    private static final Strategy STRAT_SINGLE = Strategy.COMBINE_MAIN; // Single mode Strat
     private static final int TESTCASES = 35; // Amount of testcases in experimental mode
 
-    private final static boolean TRAIN = true; //true if trian, false if experiment
+    private final static boolean TRAIN = false; //true if trian, false if experiment
 
     public static final int DEFAULTSCORE = 75;
     public static final int TOTALCELLS = 36;
@@ -111,7 +112,12 @@ class SuperNova {
                 testSet[i].score = experiment(false, testSet[i]);
             }
 
-            Arrays.sort(testSet, (o1, o2) -> -Integer.compare(o1.score, o2.score));
+            Arrays.sort(testSet, new Comparator<NeuralNetwork>() {
+                @Override
+                public int compare(NeuralNetwork o1, NeuralNetwork o2) {
+                    return -Integer.compare(o1.score, o2.score);
+                }
+            });
 
             int keep = (int)(POOLSIZE * keepAlive);
 

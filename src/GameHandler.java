@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Random;
 
 // CodeCup has no javafx.util.Pair so made my own
 class Pair<O1, O2> {
@@ -291,9 +290,9 @@ class GameHandler {
     }
 
     private String computeOutputCombinedMain() {
-        if(turn < 12) {
+        if(turn < 7) {
             return  computeOutputNeuralNet();
-        } else if(turn < 14) {
+        } else if(turn < 12) {
             return computeOutputLeastLoss();
         } else {
             return computeOutputMinMax();
@@ -314,7 +313,6 @@ class GameHandler {
         neuralNetwork.setInputs(board.getAllCells(), oppColor);
         neuralNetwork.caluculateOutput();
         int node = neuralNetwork.getOutput(board.getAllCells());
-        ArrayList<Coin> coins = board.getRemainingCoins(ourColor);
         return board.getAllCells().get(node).getName() + "=" + board.getHighestRemainingCoin(ourColor).getValue();
     }
 }
