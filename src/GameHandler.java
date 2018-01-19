@@ -47,7 +47,7 @@ class GameHandler {
         if(neuralNetwork != null) {
             this.neuralNetwork = neuralNetwork;
         } else if(strategy == Strategy.NEURAL_NET) {
-            this.neuralNetwork = new NeuralNetwork(new int[]{72, 50, 36});
+            this.neuralNetwork = new NeuralNetwork(new int[]{72, 50, 40, 36});
             neuralNetwork.initializeWeights();
         }
     }
@@ -292,7 +292,7 @@ class GameHandler {
     private String computeOutputCombinedMain() {
         if(turn < 7) {
             return  computeOutputNeuralNet();
-        } else if(turn < 12) {
+        } else if(turn < 14) {
             return computeOutputLeastLoss();
         } else {
             return computeOutputMinMax();

@@ -5,7 +5,7 @@ import java.util.Random;
 
 class SuperNova {
 
-    public final static boolean DEBUG = true; // Contest: true (doesn't matter a lot)
+    public final static boolean DEBUG = false; // Contest: true (doesn't matter a lot)
     public final static boolean PRINTDEBUGTOSTERR = true; // Contest: true
     public final static boolean SINGLEMODE = false; // Contest: true
     public static final String[] BROWNCELLS = {"H1", "F2", "A3", "C4", "D5"}; //Only needed for non single mode
@@ -14,9 +14,9 @@ class SuperNova {
     private static final Strategy STRAT_ONE = Strategy.COMBINE_MAIN;    // Compare mode Red Strat
     private static final Strategy STRAT_TWO = Strategy.COMBINE_TEST;       // Compare mode Blue Strat
     private static final Strategy STRAT_SINGLE = Strategy.COMBINE_MAIN; // Single mode Strat
-    private static final int TESTCASES = 35; // Amount of testcases in experimental mode
+    private static final int TESTCASES = 50; // Amount of testcases in experimental mode
 
-    private final static boolean TRAIN = false; //true if trian, false if experiment
+    private final static boolean TRAIN = true; //true if trian, false if experiment
 
     public static final int DEFAULTSCORE = 75;
     public static final int TOTALCELLS = 36;
@@ -28,14 +28,14 @@ class SuperNova {
 
     public static void main(String[] args) {
         if(SINGLEMODE) {
-            NeuralNetwork neuralNetwork = new NeuralNetwork(new int[]{72, 50, 36});
+            NeuralNetwork neuralNetwork = new NeuralNetwork(new int[]{72, 50, 40, 36});
             neuralNetwork.initializeWeights();
             new GameHandler(STRAT_SINGLE, neuralNetwork).run();
         } else {
             if(TRAIN) {
                 trainNN();
             } else {
-                NeuralNetwork neuralNetwork = new NeuralNetwork(new int[]{72, 50, 36});
+                NeuralNetwork neuralNetwork = new NeuralNetwork(new int[]{72, 50, 40, 36});
                 neuralNetwork.initializeWeights();
                 experiment(true, neuralNetwork);
             }
@@ -81,12 +81,12 @@ class SuperNova {
             redTime += judge.getTime(Color.RED);
             blueTime += judge.getTime(Color.BLUE);
         }
-        blueScore /= TESTCASES;
-        redScore /= TESTCASES;
-        blueTime /= TESTCASES;
-        redTime /= TESTCASES;
 
         if(output) {
+            blueScore /= TESTCASES;
+            redScore /= TESTCASES;
+            blueTime /= TESTCASES;
+            redTime /= TESTCASES;
             System.out.println("Scores: [" + redScore + "|" + blueScore + "]");
             System.out.println("Times: [" + redTime + "|" + blueTime + "]");
         }
@@ -95,10 +95,10 @@ class SuperNova {
     }
 
     private static void trainNN() {
-        int TIMES = 200;
+        int TIMES = 500000;
         int POOLSIZE = 500;
         double keepAlive = 0.05;
-        int[] layers = new int[]{72, 50, 36};
+        int[] layers = new int[]{72, 50, 40, 36};
 
         NeuralNetwork[] testSet = new NeuralNetwork[POOLSIZE];
         for(int i=0; i<POOLSIZE; i++) {
@@ -108,6 +108,7 @@ class SuperNova {
 
         for(int t=0; t<TIMES; t++) {
             System.out.println("Starting iteration "+t+"     ----------------------");
+
             for (int i = 0; i < POOLSIZE; i++) {
                 testSet[i].score = experiment(false, testSet[i]);
             }
@@ -121,9 +122,8 @@ class SuperNova {
 
             int keep = (int)(POOLSIZE * keepAlive);
 
-            int mutate = 15;
-            double KEEPMUTATION = 0.90;
-
+            int mutate = keep;
+            double KEEPMUTATION = 0.93;
 
             Random random = new Random();
 
@@ -158,6 +158,18 @@ class SuperNova {
                     }
                 }
 
+                for(int k=0; k<daddyOne.w2.length; k++) {
+                    for(int j=0; j<daddyOne.w2[0].length; j++) {
+                        if(random.nextBoolean()) {
+                            one.w2[k][j] = daddyOne.w2[k][j];
+                            two.w2[k][j] = daddyTwo.w2[k][j];
+                        } else {
+                            two.w2[k][j] = daddyOne.w2[k][j];
+                            one.w2[k][j] = daddyTwo.w2[k][j];
+                        }
+                    }
+                }
+
             }
 
             for(int i= keep + mutate; i<POOLSIZE; i++) {
@@ -183,11 +195,23 @@ class SuperNova {
                     for(int k=0; k<daddy.w1.length; k++) {
                         for(int j=0; j<daddy.w1[0].length; j++) {
                             if(random.nextDouble() < KEEPMUTATION) {
-                                baby.w1[k][j] = daddy.w0[k][j];
+                                baby.w1[k][j] = daddy.w1[k][j];
                             } else if(random.nextBoolean()) {
                                 baby.w1[k][j] = (random.nextDouble() * 4 - 2) * daddy.w1[k][j];
                             } else {
                                 baby.w1[k][j] = random.nextDouble() * 2 - 1;
+                            }
+                        }
+                    }
+
+                    for(int k=0; k<daddy.w2.length; k++) {
+                        for(int j=0; j<daddy.w2[0].length; j++) {
+                            if(random.nextDouble() < KEEPMUTATION) {
+                                baby.w2[k][j] = daddy.w2[k][j];
+                            } else if(random.nextBoolean()) {
+                                baby.w2[k][j] = (random.nextDouble() * 4 - 2) * daddy.w2[k][j];
+                            } else {
+                                baby.w2[k][j] = random.nextDouble() * 2 - 1;
                             }
                         }
                     }
