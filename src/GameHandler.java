@@ -1,8 +1,25 @@
-import javafx.util.Pair;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Random;
+
+// CodeCup has no javafx.util.Pair so made my own
+class Pair<O1, O2> {
+
+    O1 key;
+    O2 value;
+
+    Pair(O1 key, O2 value) {
+        this.key = key;
+        this.value = value;
+    }
+
+    public O1 getKey() {
+        return key;
+    }
+
+    public O2 getValue() {
+        return value;
+    }
+}
 
 enum Strategy {
     RANDOM, HIGHESTOPEN, LEASTLOSS, COMBINE_MAIN, COMBINE_TEST, NEURAL_NET, MINMAX
