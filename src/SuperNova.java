@@ -11,12 +11,12 @@ class SuperNova {
     public static final String[] BROWNCELLS = {"H1", "F2", "A3", "C4", "D5"}; //Only needed for non single mode
     private static final boolean RANDOM_BROWNCELLS = true; // Only for non single mode
 
-    private static final Strategy STRAT_ONE = Strategy.COMBINE_MAIN;    // Compare mode Red Strat
-    private static final Strategy STRAT_TWO = Strategy.COMBINE_TEST;       // Compare mode Blue Strat
+    private static final Strategy STRAT_ONE = Strategy.COMBINE_TEST;    // Compare mode Red Strat
+    private static final Strategy STRAT_TWO = Strategy.COMBINE_MAIN;       // Compare mode Blue Strat
     private static final Strategy STRAT_SINGLE = Strategy.COMBINE_MAIN; // Single mode Strat
-    private static final int TESTCASES = 50; // Amount of testcases in experimental mode
+    private static final int TESTCASES = 100; // Amount of testcases in experimental mode
 
-    private final static boolean TRAIN = true; //true if trian, false if experiment
+    private final static boolean TRAIN = false; //true if trian, false if experiment
 
     public static final int DEFAULTSCORE = 75;
     public static final int TOTALCELLS = 36;

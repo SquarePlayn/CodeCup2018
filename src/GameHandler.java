@@ -292,7 +292,7 @@ class GameHandler {
     private String computeOutputCombinedMain() {
         if(turn < 7) {
             return  computeOutputNeuralNet();
-        } else if(turn < 14) {
+        } else if(turn < 12) {
             return computeOutputLeastLoss();
         } else {
             return computeOutputMinMax();
@@ -302,7 +302,7 @@ class GameHandler {
     private String computeOutputCombinedTest() {
         if(turn < 7) {
             return  computeOutputHighFree();
-        } else if(turn < 14) {
+        } else if(turn < 12) {
             return computeOutputLeastLoss();
         } else {
             return computeOutputMinMax();
